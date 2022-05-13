@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.renewUser = exports.login = exports.newUser = void 0;
 const User_1 = __importDefault(require("../models/User"));
 const jwt_1 = require("../helpers/jwt");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
@@ -26,6 +27,9 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         user = new User_1.default(req.body);
+        //Encriptar contraseña
+        const salt = bcryptjs_1.default.genSaltSync();
+        user.password = bcryptjs_1.default.hashSync(password, salt);
         yield user.save();
         //Generar JWT
         const token = yield (0, jwt_1.JWTGen)(user.uid, user.name);
@@ -54,7 +58,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg: "There is an error with username or password",
             });
         }
-        const validPassword = password === user.password;
+        //Confirmar los passwords
+        const validPassword = bcryptjs_1.default.compareSync(password, user.password);
         if (!validPassword) {
             return res.status(400).json({
                 ok: false,

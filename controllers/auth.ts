@@ -7,6 +7,7 @@ import {
 } from "../interface/CustomRequest";
 import UserS from "../models/User";
 import { JWTGen } from "../helpers/jwt";
+import bcrypt from "bcryptjs";
 
 export const newUser = async (req: CustomRequest<NewUser>, res: Response) => {
     const { email, password } = req.body;
@@ -22,6 +23,11 @@ export const newUser = async (req: CustomRequest<NewUser>, res: Response) => {
         }
 
         user = new UserS(req.body);
+
+        //Encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+
+        user.password = bcrypt.hashSync(password, salt);
 
         await user.save();
 
@@ -53,7 +59,9 @@ export const login = async (req: CustomRequest<User>, res: Response) => {
                 msg: "There is an error with username or password",
             });
         }
-        const validPassword = password === user.password;
+        //Confirmar los passwords
+        const validPassword = bcrypt.compareSync(password, user.password);
+
         if (!validPassword) {
             return res.status(400).json({
                 ok: false,

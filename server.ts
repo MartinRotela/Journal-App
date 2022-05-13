@@ -3,11 +3,15 @@ import dotenv from "dotenv";
 import { router } from "./routes/auth";
 import { dbConnection } from "./database/config";
 import { notesRouter } from "./routes/notes";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT;
+
+// CORS
+app.use(cors());
 
 //Database
 dbConnection();

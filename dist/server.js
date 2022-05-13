@@ -8,9 +8,12 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const auth_1 = require("./routes/auth");
 const config_1 = require("./database/config");
 const notes_1 = require("./routes/notes");
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT;
+// CORS
+app.use((0, cors_1.default)());
 //Database
 (0, config_1.dbConnection)();
 //Read and parse body
