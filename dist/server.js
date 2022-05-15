@@ -25,7 +25,7 @@ app.use("/", express_1.default.static("public"));
 app.use("/api/notes", notes_1.notesRouter);
 app.use("/api/auth", auth_1.router);
 app.get("/*", function (req, res) {
-    res.sendFile(path_1.default.join(__dirname, "./public/index.html"), function (err) {
+    res.sendFile(path_1.default.join(__dirname, "public/index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
         }
