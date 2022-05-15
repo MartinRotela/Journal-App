@@ -8,7 +8,7 @@ import path from "path";
 
 dotenv.config();
 const app = express();
-
+const publicPath = path.join(__dirname, "..", "public");
 const PORT = process.env.PORT;
 
 // CORS
@@ -27,7 +27,7 @@ app.use("/", express.static("public"));
 app.use("/api/notes", notesRouter);
 app.use("/api/auth", router);
 app.get("/*", function (req, res) {
-    res.sendFile(path.join(__dirname, "public/index.html"), function (err) {
+    res.sendFile(path.join(publicPath, "index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
         }

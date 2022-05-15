@@ -12,6 +12,7 @@ const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+const publicPath = path_1.default.join(__dirname, "..", "public");
 const PORT = process.env.PORT;
 // CORS
 app.use((0, cors_1.default)());
@@ -25,7 +26,7 @@ app.use("/", express_1.default.static("public"));
 app.use("/api/notes", notes_1.notesRouter);
 app.use("/api/auth", auth_1.router);
 app.get("/*", function (req, res) {
-    res.sendFile(path_1.default.join(__dirname, "public/index.html"), function (err) {
+    res.sendFile(path_1.default.join(publicPath, "index.html"), function (err) {
         if (err) {
             res.status(500).send(err);
         }
