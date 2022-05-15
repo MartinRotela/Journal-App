@@ -32,7 +32,7 @@ const newUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         user.password = bcryptjs_1.default.hashSync(password, salt);
         yield user.save();
         //Generar JWT
-        const token = yield (0, jwt_1.JWTGen)(user.uid, user.name);
+        const token = yield (0, jwt_1.JWTGen)(user.id, user.name);
         return res.status(200).json({
             ok: true,
             uid: user.id,

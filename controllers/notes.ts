@@ -2,11 +2,15 @@ import express, { Request, Response } from "express";
 import Note from "../models/Notes";
 
 export const getNotes = async (req: Request, res: Response) => {
-    const eventos = await Note.find().where("user").equals(req.body.uid);
+    const notes = await Note.find()
+        .where("uid")
+        .equals(req.body.uid)
+        .populate("uid", "name")
+        .sort({ date: -1 });
 
     res.json({
         ok: true,
-        eventos,
+        notes,
     });
 };
 
@@ -14,8 +18,7 @@ export const postNote = async (req: Request, res: Response) => {
     const note = new Note(req.body);
 
     try {
-        note.user = req.body.uid;
-        console.log(note.user);
+        note.uid = req.body.uid;
         const savedNote = await note.save();
         res.json({
             ok: true,
@@ -42,7 +45,7 @@ export const putNote = async (req: Request, res: Response) => {
             });
         }
 
-        if (note.user !== uid) {
+        if (note.uid !== uid) {
             return res.status(401).json({
                 ok: false,
                 msg: "You do not have permission",
@@ -51,7 +54,7 @@ export const putNote = async (req: Request, res: Response) => {
 
         const newNote = {
             ...req.body,
-            user: uid,
+            uid,
         };
 
         const noteUpdated = await Note.findByIdAndUpdate(noteId, newNote, {
@@ -84,7 +87,7 @@ export const deleteNote = async (req: Request, res: Response) => {
             });
         }
 
-        if (note.user !== uid) {
+        if (note.uid !== uid) {
             return res.status(401).json({
                 ok: false,
                 msg: "You do not have permission",

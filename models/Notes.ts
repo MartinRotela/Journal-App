@@ -3,11 +3,11 @@ import { Schema, model } from "mongoose";
 export const NoteSchema = new Schema({
     title: {
         type: String,
-        required: true,
+        required: false,
     },
     body: {
         type: String,
-        required: true,
+        required: false,
     },
     date: {
         type: Date,
@@ -17,10 +17,16 @@ export const NoteSchema = new Schema({
         type: String,
         required: false,
     },
-    user: {
+    uid: {
         type: String,
         required: true,
     },
+});
+
+NoteSchema.method("toJSON", function () {
+    const { __v, _id, ...object } = this.toObject();
+    object.id = _id;
+    return object;
 });
 
 const Note = model("Note", NoteSchema);

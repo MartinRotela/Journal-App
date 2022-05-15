@@ -13,7 +13,7 @@ export const fieldValidator = (
     if (!errores.isEmpty()) {
         return res.status(400).json({
             ok: false,
-            errors: errores.mapped(),
+            errors: errores.array(),
         });
     }
 

@@ -15,18 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.putNote = exports.postNote = exports.getNotes = void 0;
 const Notes_1 = __importDefault(require("../models/Notes"));
 const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const eventos = yield Notes_1.default.find().where("user").equals(req.body.uid);
+    const notes = yield Notes_1.default.find()
+        .where("uid")
+        .equals(req.body.uid)
+        .populate("uid", "name")
+        .sort({ date: -1 });
     res.json({
         ok: true,
-        eventos,
+        notes,
     });
 });
 exports.getNotes = getNotes;
 const postNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const note = new Notes_1.default(req.body);
     try {
-        note.user = req.body.uid;
-        console.log(note.user);
+        note.uid = req.body.uid;
         const savedNote = yield note.save();
         res.json({
             ok: true,
@@ -52,13 +55,13 @@ const putNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg: "Note does not exist",
             });
         }
-        if (note.user !== uid) {
+        if (note.uid !== uid) {
             return res.status(401).json({
                 ok: false,
                 msg: "You do not have permission",
             });
         }
-        const newNote = Object.assign(Object.assign({}, req.body), { user: uid });
+        const newNote = Object.assign(Object.assign({}, req.body), { uid });
         const noteUpdated = yield Notes_1.default.findByIdAndUpdate(noteId, newNote, {
             new: true,
         });
@@ -87,7 +90,7 @@ const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 msg: "Note does not exist",
             });
         }
-        if (note.user !== uid) {
+        if (note.uid !== uid) {
             return res.status(401).json({
                 ok: false,
                 msg: "You do not have permission",

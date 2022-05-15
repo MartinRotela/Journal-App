@@ -32,7 +32,7 @@ export const newUser = async (req: CustomRequest<NewUser>, res: Response) => {
         await user.save();
 
         //Generar JWT
-        const token = await JWTGen(user.uid, user.name);
+        const token = await JWTGen(user.id, user.name);
 
         return res.status(200).json({
             ok: true,
